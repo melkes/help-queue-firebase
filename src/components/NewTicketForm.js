@@ -1,5 +1,6 @@
 import React from "react";
-import { v4 } from 'uuid';
+// import { v4 } from 'uuid'; update NewTicketForm.js to not generate an ID or an id property for our ticket. Remove the following two lines of code from NewTicketForm.js removing this
+
 import PropTypes from "prop-types"; 
 import ReusableForm from "./ReusableForm";
 
@@ -11,7 +12,7 @@ function NewTicketForm(props){
       names: event.target.names.value, 
       location: event.target.location.value, 
       issue: event.target.issue.value, 
-      id: v4()
+      // id: v4()
     });
   }
 

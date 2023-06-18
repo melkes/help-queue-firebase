@@ -3,6 +3,10 @@ import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import EditTicketForm from './EditTicketForm';
 import TicketDetail from './TicketDetail';
+import db from './../firebase.js';
+
+import { collection, addDoc } from "firebase/firestore";
+
 
 function TicketControl() {
 
@@ -54,11 +58,18 @@ function TicketControl() {
     setSelectedTicket(null);
   }
 
-  const handleAddingNewTicketToList = (newTicket) => {
-    const newMainTicketList = mainTicketList.concat(newTicket);
-    setMainTicketList(newMainTicketList);
+  const handleAddingNewTicketToList = async (newTicketData) => {
+    await addDoc(collection(db, "tickets"), newTicketData);
+    // const newMainTicketList = mainTicketList.concat(newTicketData);
+    // setMainTicketList(newMainTicketList);
     setFormVisibleOnPage(false);
   }
+// This is the same, but may be easier to read:
+  // const handleAddingNewTicketToList = async (newTicketData) => {
+  //   const collectionRef = collection(db, "tickets");
+  //   await addDoc(collectionRef, newTicketData);
+  //   setFormVisibleOnPage(false);
+  // }
 
   const handleChangingSelectedTicket = (id) => {
     const selection = mainTicketList.filter(ticket => ticket.id === id)[0];
