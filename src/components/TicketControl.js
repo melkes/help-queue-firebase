@@ -46,14 +46,28 @@ function TicketControl() {
       // We could also use the spread operator doc.data() to flatten the object
       }, 
       (error) => {
-        setError(error.message)
         // do something with error
+        setError(error.message)
+        // above line should have been added for this commit, not earlier
       }
     );
 
     return () => unSubscribe();
   }, []);
-
+  
+    if(error){
+      currentlyVisibleState = <p>There was an error: {error}</p> 
+    }
+    // Maybe add if/else statments?
+    // else if (editing) {      
+    //   // ...
+    // } else if (selectedTicket != null) {
+    //   // ...
+    // } else if (formVisibleOnPage) {
+    //   // ...
+    // } else {
+    //   // ...
+    // }
 
   const handleClick = () => {
     if (selectedTicket != null) {
@@ -138,7 +152,7 @@ function TicketControl() {
   return (
     <React.Fragment>
       {currentlyVisibleState}
-      <button onClick={handleClick}>{buttonText}</button> 
+      { error ? null : <button onClick={handleClick}>{buttonText}</button> }
     </React.Fragment>
   );
 }
