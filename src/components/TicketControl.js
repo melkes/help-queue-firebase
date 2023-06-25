@@ -4,7 +4,7 @@ import EditTicketForm from './EditTicketForm';
 import TicketDetail from './TicketDetail';
 import React, {useState} from 'react';
 import db from './../firebase.js';
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, onSnapshot } from "firebase/firestore";
 
 
 function TicketControl() {
@@ -22,6 +22,21 @@ function TicketControl() {
   //     editing: false
   //   };
   // }
+
+  useEffect(() => { 
+    const unSubscribe = onSnapshot(
+      collection(db, "tickets"), 
+      (collectionSnapshot) => {
+        // do something with ticket data
+      }, 
+      (error) => {
+        setError(error.message)
+        // do something with error
+      }
+    );
+
+    return () => unSubscribe();
+  }, []);
 
 
   const handleClick = () => {
