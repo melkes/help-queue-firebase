@@ -28,6 +28,22 @@ function TicketControl() {
       collection(db, "tickets"), 
       (collectionSnapshot) => {
         // do something with ticket data
+        const tickets = [];
+      collectionSnapshot.forEach((doc) => {
+          tickets.push({
+            names: doc.data().names, 
+            location: doc.data().location, 
+            issue: doc.data().issue, 
+            id: doc.id
+          });
+      });
+      setMainTicketList(tickets);
+      // We loop through the returned documents and construct a tickets array with JS ticket objects
+      // Call setMainTicketList() to update mainTicketList with the array
+      // Note that Firestore data is structured differently than JS objects, so we have to construct the objects
+      // We can access the auto-generated ID with doc.id
+      // doc.data() returns the document data as a JS object - we're accessing properties with dot notation
+      // We could also use the spread operator doc.data() to flatten the object
       }, 
       (error) => {
         setError(error.message)
