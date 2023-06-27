@@ -1,11 +1,10 @@
+import React, {useState, useEffect} from 'react';
 import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import EditTicketForm from './EditTicketForm';
 import TicketDetail from './TicketDetail';
-import React, {useState, useEffect} from 'react';
-import { db } from './../firebase.js';
+import { db, auth } from './../firebase.js';
 import { collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc  } from "firebase/firestore";
-
 
 function TicketControl() {
   const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
@@ -13,16 +12,6 @@ function TicketControl() {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState(null);
-  
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     formVisibleOnPage: false,
-  //     mainTicketList: [],
-  //     selectedTicket: null,
-  //     editing: false
-  //   };
-  // }
 
   useEffect(() => { 
     const unSubscribe = onSnapshot(
@@ -39,12 +28,6 @@ function TicketControl() {
           });
       });
       setMainTicketList(tickets);
-      // We loop through the returned documents and construct a tickets array with JS ticket objects
-      // Call setMainTicketList() to update mainTicketList with the array
-      // Note that Firestore data is structured differently than JS objects, so we have to construct the objects
-      // We can access the auto-generated ID with doc.id
-      // doc.data() returns the document data as a JS object - we're accessing properties with dot notation
-      // We could also use the spread operator doc.data() to flatten the object
       }, 
       (error) => {
         // do something with error
@@ -55,20 +38,9 @@ function TicketControl() {
 
     return () => unSubscribe();
   }, []);
-  
-    if(error){
-      currentlyVisibleState = <p>There was an error: {error}</p> 
-    }
-    // Maybe add if/else statments?
-    // else if (editing) {      
-    //   // ...
-    // } else if (selectedTicket != null) {
-    //   // ...
-    // } else if (formVisibleOnPage) {
-    //   // ...
-    // } else {
-    //   // ...
-    // }
+  if(error){
+
+  }
 
   const handleClick = () => {
     if (selectedTicket != null) {
@@ -84,17 +56,6 @@ function TicketControl() {
     await deleteDoc(doc(db, "tickets", id));
     setSelectedTicket(null);
   } 
-  // old version:
-  // const handleDeletingTicket = (id) => {
-  //   const newMainTicketList = mainTicketList.filter(ticket => ticket.id !== id);
-  //   setMainTicketList(newMainTicketList);
-  // }
-
-    // this.setState({
-    //   mainTicketList: newMainTicketList,
-    //   selectedTicket: null
-    // });
-  
 
   const handleEditClick = () => {
     setEditing(true);
@@ -111,12 +72,6 @@ function TicketControl() {
     setSelectedTicket(null);
   }
 
-  // const handleAddingNewTicketToList = (newTicket) => {
-  //   const newMainTicketList = mainTicketList.concat(newTicket);
-  //   setMainTicketList(newMainTicketList);
-  //   setFormVisibleOnPage(false)
-  // }
-// This is the same, but may be easier to read:
   const handleAddingNewTicketToList = async (newTicketData) => {
     const collectionRef = collection(db, "tickets");
     await addDoc(collectionRef, newTicketData);
@@ -128,7 +83,6 @@ function TicketControl() {
     setSelectedTicket(selection);
   }
 
-  
   let currentlyVisibleState = null;
   let buttonText = null; 
 
