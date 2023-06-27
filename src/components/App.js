@@ -9,6 +9,7 @@ function App(){
     <Router>
       <div className="container">
         <Header />
+         <div style={{ margin: '20px 0' }} /> 
         <Routes>
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/" element={<TicketControl />} />
