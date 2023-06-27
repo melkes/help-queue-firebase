@@ -2,9 +2,9 @@ import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import EditTicketForm from './EditTicketForm';
 import TicketDetail from './TicketDetail';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import db from './../firebase.js';
-import { collection, addDoc, onSnapshot } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc  } from "firebase/firestore";
 
 
 function TicketControl() {
@@ -12,6 +12,7 @@ function TicketControl() {
   const [mainTicketList, setMainTicketList] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [error, setError] = useState(null);
   
   // constructor(props) {
   //   super(props);
@@ -78,11 +79,17 @@ function TicketControl() {
       setFormVisibleOnPage(!formVisibleOnPage);
     }
   }
+  
+    const handleDeletingTicket = async (id) => {
+    await deleteDoc(doc(db, "tickets", id));
+    setSelectedTicket(null);
+  } 
+  // old version:
+  // const handleDeletingTicket = (id) => {
+  //   const newMainTicketList = mainTicketList.filter(ticket => ticket.id !== id);
+  //   setMainTicketList(newMainTicketList);
+  // }
 
-  const handleDeletingTicket = (id) => {
-    const newMainTicketList = mainTicketList.filter(ticket => ticket.id !== id);
-    setMainTicketList(newMainTicketList);
-  }
     // this.setState({
     //   mainTicketList: newMainTicketList,
     //   selectedTicket: null
@@ -93,11 +100,13 @@ function TicketControl() {
     setEditing(true);
   }
 
-  const handleEditingTicketInList = (ticketToEdit) => {
-    const editedMainTicketList = mainTicketList
-      .filter(ticket => ticket.id !== selectedTicket.id)
-      .concat(ticketToEdit);
-    setMainTicketList(editedMainTicketList);
+  const handleEditingTicketInList = async (ticketToEdit) => {
+    const ticketRef = doc(db, "tickets", ticketToEdit.id);
+    // ticketRef is a DocumentReference object that points to the 
+    // document with ID ticketToEdit.id in the tickets collection.
+    await updateDoc(ticketRef, ticketToEdit);
+    // This uses that reference to update 
+    // the data for that document with the ticketToEdit object.
     setEditing(false);
     setSelectedTicket(null);
   }
